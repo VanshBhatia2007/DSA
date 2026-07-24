@@ -1,29 +1,38 @@
 class Solution {
 public:
-    vector<vector <int> > ans;
-    void solve(vector<int>&a,int i,vector<int> &x,int target){
-        int n=a.size();
+    set<vector<int>> s;
+
+    void getcombinations(vector<int>& arr,int idx ,int tar, vector<vector<int>>& ans,vector<int>& combi){
         //base case
-        if(target==0){
-            ans.push_back(x);
+        if(idx == arr.size() || tar < 0){
             return;
         }
-        if(i==n){
-            return;
-        }
-        //recursive case
-        for(int j=i;j<n;j++){
-            if(a[j]<=target){
-                x.push_back(a[j]);
-                solve(a,j,x,target-a[j]);
-                x.pop_back();
+        if(tar == 0){
+            if(s.find(combi)==s.end()){
+                ans.push_back({combi});
+                s.insert(combi);
             }
+            return;
+
         }
 
+        combi.push_back(arr[idx]);
+        //include
+        getcombinations(arr,idx+1,tar-arr[idx],ans,combi);
+        //multiple
+        getcombinations(arr,idx,tar-arr[idx],ans,combi);
+        //backtrack
+        combi.pop_back();
+        //exclude
+        getcombinations(arr,idx+1,tar,ans,combi);
+
+
     }
-    vector<vector<int>> combinationSum(vector<int>& a, int target) {
-        vector<int> x;
-        solve(a,0,x,target);
+    vector<vector<int>> combinationSum(vector<int>& arr, int tar) {
+        vector<vector<int>> ans;
+        vector<int> combi;
+        getcombinations(arr,0,tar,ans,combi);
         return ans;
+
     }
 };
